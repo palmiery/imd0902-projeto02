@@ -1,6 +1,4 @@
 import time, random
-
-# Import Adafruit IO REST client.
 from Adafruit_IO import Client, Feed
 from gpiozero import Button
 import Adafruit_DHT
@@ -10,21 +8,12 @@ pin = 22
 
 ruido = Button(5)
 
-# Set to your Adafruit IO key.
-# Remember, your key is a secret,
-# so make sure not to publish it when you publish this code!
-
 ADAFRUIT_IO_KEY = 'aio_ZoTs57hulgxO3xIoKPeSqg2Nz0WN'
-
-# Set to your Adafruit IO username.
-# (go to https://accounts.adafruit.com to find your username)
 
 ADAFRUIT_IO_USERNAME = 'palmiery'
 
-# Create an instance of the REST client.
 aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
 
-#########################################
 import sys
 
 if sys.platform.startswith('linux'):
@@ -58,16 +47,11 @@ while True:
 				
 	
         time.sleep(0.5)
-    #values = [0]*4
-    #for i in range(4):
-        #values[i] = sensor.read_adc(i, gain=GAIN)
-        #time.sleep(0.4)
+
     umidade, temperatura = Adafruit_DHT.read_retry(sensor, pin)
     print("{} {} {}".format(temperatura,umidade,str(ruido.is_pressed)))
     aio.send_data('temperatura', str(temperatura))
     aio.send_data('umidade', str(umidade))
     aio.send_data('ruido', str(ruido.value))
     
-    # Adafruit IO is rate-limited for publishing
-    # so we'll need a delay for calls to aio.send_data()
     time.sleep(10)
